@@ -1,0 +1,166 @@
+const starterTopics = [
+  { id: 1, name: "JavaScript basics", progress: 25, minutes: 20, completed: false },
+  { id: 2, name: "Web design fundamentals", progress: 60, minutes: 45, completed: false },
+  { id: 3, name: "Everyday English vocabulary", progress: 100, minutes: 30, completed: true }
+];
+
+let topics = starterTopics;
+
+try {
+  const savedTopics = localStorage.getItem("studysprint-topics");
+  if (savedTopics) {
+    topics = JSON.parse(savedTopics);
+  }
+} catch {
+  topics = starterTopics;
+}
+
+const topicList = document.querySelector("#topic-list");
+const emptyState = document.querySelector("#empty-state");
+const topicCount = document.querySelector("#topic-count");
+const completedCount = document.querySelector("#completed-count");
+const studyTime = document.querySelector("#study-time");
+const streakCount = document.querySelector("#streak-count");
+const addTopicButton = document.querySelector("#add-topic-button");
+const addTopicForm = document.querySelector("#add-topic-form");
+const topicInput = document.querySelector("#topic-input");
+const cancelTopicButton = document.querySelector("#cancel-topic-button");
+
+function saveTopics() {
+  localStorage.setItem("studysprint-topics", JSON.stringify(topics));
+}
+
+function renderTopics() {
+  topicList.innerHTML = "";
+
+  for (const topic of topics) {
+    const card = document.createElement("article");
+    card.className = "topic-card";
+
+    card.innerHTML = `
+      <div class="topic-top">
+        <h3 class="topic-name"></h3>
+        <span class="topic-status">${topic.completed ? "Completed" : "In progress"}</span>
+      </div>
+      <div class="progress-track" role="progressbar"
+           aria-label="Topic progress" aria-valuenow="${topic.progress}"
+           aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-fill" style="width: ${topic.progress}%"></div>
+      </div>
+      <div class="topic-bottom">
+        <span>${topic.progress}% complete · ${topic.minutes} study minutes</span>
+        <div class="topic-actions">
+          <button class="small-button progress-button" type="button">
+            ${topic.completed ? "Review" : "Add 10%"}
+          </button>
+          <button class="small-button delete delete-button" type="button">Remove</button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector(".topic-name").textContent = topic.name;
+
+    card.querySelector(".progress-button").addEventListener("click", () => {
+      if (topic.completed) {
+        topic.progress = 0;
+        topic.completed = false;
+      } else {
+        topic.progress = Math.min(topic.progress + 10, 100);
+        topic.minutes += 10;
+        topic.completed = topic.progress === 100;
+      }
+
+      saveTopics();
+      renderTopics();
+    });
+
+    card.querySelector(".delete-button").addEventListener("click", () => {
+      topics = topics.filter((item) => item.id !== topic.id);
+      saveTopics();
+      renderTopics();
+    });
+
+    topicList.append(card);
+  }
+
+  const completed = topics.filter((topic) => topic.completed).length;
+  const totalMinutes = topics.reduce((sum, topic) => sum + topic.minutes, 0);
+
+  topicCount.textContent = topics.length;
+  completedCount.textContent = completed;
+  studyTime.textContent = `${totalMinutes} min`;
+  streakCount.textContent = topics.length ? "1 day" : "0 days";
+  emptyState.classList.toggle("hidden", topics.length > 0);
+}
+
+addTopicButton.addEventListener("click", () => {
+  addTopicForm.classList.remove("hidden");
+  topicInput.focus();
+});
+
+cancelTopicButton.addEventListener("click", () => {
+  addTopicForm.classList.add("hidden");
+  topicInput.value = "";
+});
+
+addTopicForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const name = topicInput.value.trim();
+  if (!name) return;
+
+  topics.unshift({
+    id: Date.now(),
+    name,
+    progress: 0,
+    minutes: 0,
+    completed: false
+  });
+
+  saveTopics();
+  renderTopics();
+  topicInput.value = "";
+  addTopicForm.classList.add("hidden");
+});
+
+renderTopics();
+
+const studyCards = [
+  { question: "What does HTML do?", answer: "It gives a web page its structure." },
+  { question: "What does CSS do?", answer: "It controls a web page’s appearance and layout." },
+  { question: "What does JavaScript do?", answer: "It adds behavior and interactivity to a web page." }
+];
+
+let activeCardIndex = 0;
+
+function renderStudyCard() {
+  const card = studyCards[activeCardIndex];
+  const answer = document.querySelector("#card-answer");
+
+  document.querySelector("#card-count").textContent =
+    `Card ${activeCardIndex + 1} of ${studyCards.length}`;
+  document.querySelector("#card-question").textContent = card.question;
+  answer.textContent = card.answer;
+  answer.classList.add("hidden");
+  document.querySelector("#reveal-button").textContent = "Reveal answer";
+}
+
+document.querySelector("#reveal-button").addEventListener("click", () => {
+  const answer = document.querySelector("#card-answer");
+  answer.classList.toggle("hidden");
+
+  document.querySelector("#reveal-button").textContent =
+    answer.classList.contains("hidden") ? "Reveal answer" : "Hide answer";
+});
+
+document.querySelector("#next-card").addEventListener("click", () => {
+  activeCardIndex = (activeCardIndex + 1) % studyCards.length;
+  renderStudyCard();
+});
+
+document.querySelector("#previous-card").addEventListener("click", () => {
+  activeCardIndex = (activeCardIndex - 1 + studyCards.length) % studyCards.length;
+  renderStudyCard();
+});
+
+renderStudyCard();

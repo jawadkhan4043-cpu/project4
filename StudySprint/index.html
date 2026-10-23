@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudySprint — Your Learning Space</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="StudySprint home">
+      <span class="brand-mark">S</span>
+      <span>StudySprint</span>
+    </a>
+    <span class="header-note">A little progress every day</span>
+  </header>
+
+  <main class="page">
+    <section class="welcome">
+      <div>
+        <p class="eyebrow">YOUR LEARNING SPACE</p>
+        <h1>Make today count.</h1>
+        <p class="welcome-copy">Choose a topic, focus for a while, and keep your momentum going.</p>
+      </div>
+      <div class="streak-card" aria-label="Daily streak">
+        <span class="streak-icon">✦</span>
+        <div><strong id="streak-count">0 days</strong><span>Daily streak</span></div>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="Your learning summary">
+      <article class="summary-card">
+        <span class="summary-icon purple">▤</span>
+        <div><span class="summary-label">Topics</span><strong id="topic-count">0</strong></div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon green">✓</span>
+        <div><span class="summary-label">Completed</span><strong id="completed-count">0</strong></div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon orange">◷</span>
+        <div><span class="summary-label">Study time</span><strong id="study-time">0 min</strong></div>
+      </article>
+    </section>
+
+    <section class="topics-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR PLAN</p>
+          <h2>Learning topics</h2>
+        </div>
+        <button class="button button-primary" id="add-topic-button" type="button">＋ Add topic</button>
+      </div>
+
+      <form class="add-topic-form hidden" id="add-topic-form">
+        <label for="topic-input">Topic name</label>
+        <div class="form-row">
+          <input id="topic-input" type="text" maxlength="50" placeholder="For example, JavaScript basics" required>
+          <button class="button button-primary" type="submit">Add</button>
+          <button class="button button-quiet" id="cancel-topic-button" type="button">Cancel</button>
+        </div>
+      </form>
+
+      <div class="topic-list" id="topic-list"></div>
+      <p class="empty-state hidden" id="empty-state">No topics yet. Add one to get started!</p>
+    </section>
+
+    <footer>Built for curious minds. Keep showing up.</footer>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html><section class="flashcards-section">
+  <p class="eyebrow">QUICK PRACTICE</p>
+  <h2>Flashcards</h2>
+
+  <article class="flashcard">
+    <p id="card-count"></p>
+    <h3 id="card-question"></h3>
+    <p id="card-answer" class="hidden"></p>
+    <button class="button button-primary" id="reveal-button" type="button">
+      Reveal answer
+    </button>
+  </article>
+
+  <div class="flashcard-controls">
+    <button class="button button-quiet" id="previous-card" type="button">Previous</button>
+    <button class="button button-quiet" id="next-card" type="button">Next</button>
+  </div>
+</section>
